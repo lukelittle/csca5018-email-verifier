@@ -14,6 +14,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.measureTime
@@ -46,7 +47,14 @@ class Benchmark(
             while (metrics.counter("registration - total").count < registrationCount) {
                 delay(100.milliseconds)
             }
+
         }.also { duration ->
+            if (metrics.counter("registration - total").count / duration.inWholeSeconds >= 50) {
+                logger.info("registration rate is greater or equal to 50 per second")
+            } else {
+                logger.error("registration rate was less than 50 per second")
+                exitProcess(1)
+            }
             stop()
             logger.info("benchmark finished in $duration")
         }
