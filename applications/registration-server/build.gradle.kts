@@ -44,6 +44,8 @@ task<JavaExec>("run") {
     classpath = files(tasks.jar)
     environment("DATABASE_URL", "jdbc:postgresql://localhost:5555/registration_dev?user=emailverifier&password=emailverifier")
     environment("RABBIT_URL", "amqp://localhost:5672")
+    environment("REGISTRATION_REQUEST_QUEUE_NAME", "registration-request")
+    environment("REGISTRATION_REQUEST_QUEUE_ROUTING_KEY", "42")
 }
 
 tasks {
